@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,15 @@ class NavigationDrawerFragment : Fragment() {
             override fun onDrawerClosed(drawerView: View?) {
                 super.onDrawerClosed(drawerView)
                 getActivity().invalidateOptionsMenu()
+            }
+
+            override fun onDrawerSlide(drawerView: View?, slideOffset: Float) {
+
+                // Log.d("BALIVO"," offset: "+ slideOffset)
+                // Dimm the toolbar
+                if (slideOffset < 0.6) {
+                    toolbar.setAlpha(1 - slideOffset)
+                }
             }
         }
 
