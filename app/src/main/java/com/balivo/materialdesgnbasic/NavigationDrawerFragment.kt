@@ -75,6 +75,14 @@ class NavigationDrawerFragment : Fragment() {
         }
 
         mDrawerLayout!!.addDrawerListener(mDrawerToggle as ActionBarDrawerToggle)
+
+        mDrawerLayout!!.post(object :Runnable {
+
+            override fun run() {
+                mDrawerToggle!!.syncState()
+            }
+
+        })
     }
 
     companion object {
