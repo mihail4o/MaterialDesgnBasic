@@ -4,6 +4,7 @@ import android.R.menu
 import android.content.Intent
 import android.support.v7.app.*
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
@@ -20,6 +21,13 @@ class MainActivity : AppCompatActivity() {
 
         toolbar=findViewById(R.id.app_bar)
         setSupportActionBar(toolbar)
+
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
+
+        val drawerFragment:NavigationDrawerFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer)
+                as NavigationDrawerFragment
+
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, findViewById(R.id.drawer_layout)as DrawerLayout, toolbar as Toolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
