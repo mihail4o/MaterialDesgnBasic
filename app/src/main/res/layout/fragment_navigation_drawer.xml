@@ -2,8 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FB8C00"
+    android:background="#DADADA"
     tools:context="com.balivo.materialdesgnbasic.NavigationDrawerFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FB8C00">
+
 
     <ImageView
             android:layout_marginTop="@dimen/drawer_margin_top"
@@ -11,5 +17,7 @@
             android:layout_height="140dp"
             android:src="@drawable/ic_abstract1"
             android:layout_marginBottom="16dp"/>
+
+    </LinearLayout>
 
 </FrameLayout>
