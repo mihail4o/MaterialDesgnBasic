@@ -1,14 +1,15 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEE"
+    android:background="#FB8C00"
     tools:context="com.balivo.materialdesgnbasic.NavigationDrawerFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageView
+            android:layout_marginTop="@dimen/drawer_margin_top"
+            android:layout_width="@dimen/nav_drawer_width"
+            android:layout_height="140dp"
+            android:src="@drawable/ic_abstract1"
+            android:layout_marginBottom="16dp"/>
 
-</RelativeLayout>
+</FrameLayout>

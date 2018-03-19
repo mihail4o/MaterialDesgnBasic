@@ -6,7 +6,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <RelativeLayout
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
@@ -15,11 +17,6 @@
             android:id="@+id/app_bar"
             layout="@layout/app_bar"/>
 
-        <TextView
-            android:layout_below="@+id/app_bar"
-            android:text="@string/hello_world"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
