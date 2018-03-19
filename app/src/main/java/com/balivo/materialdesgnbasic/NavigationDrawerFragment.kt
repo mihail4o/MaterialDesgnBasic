@@ -22,8 +22,8 @@ class NavigationDrawerFragment : Fragment() {
     private var mDrawerToggle:ActionBarDrawerToggle?=null
     private var mDrawerLayout:DrawerLayout?=null
 
-    private var mUserLernedDrawer:Boolean?=null
-    private var mFromSavedInstanceState:Boolean?=null
+    private var mUserLernedDrawer:Boolean?=false
+    private var mFromSavedInstanceState:Boolean?=false
 
     private var containerView:View?=null
 
