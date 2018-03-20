@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import android.view.ViewGroup
  * A simple [Fragment] subclass.
  */
 class NavigationDrawerFragment : Fragment() {
+
+    private var mRecyclerView:RecyclerView?=null
 
     private var mDrawerToggle:ActionBarDrawerToggle?=null
     private var mDrawerLayout:DrawerLayout?=null
@@ -31,7 +34,9 @@ class NavigationDrawerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_navigation_drawer, container, false)
+        val layout:View = inflater!!.inflate(R.layout.fragment_navigation_drawer, container, false)
+        mRecyclerView = layout.findViewById(R.id.drawerList)
+        return layout
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
