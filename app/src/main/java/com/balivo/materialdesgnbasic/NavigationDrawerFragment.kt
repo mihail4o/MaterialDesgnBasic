@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -30,12 +31,19 @@ class NavigationDrawerFragment : Fragment() {
 
     private var containerView:View?=null
 
+    private var adapter:RecycleAdapter?=null
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val layout:View = inflater!!.inflate(R.layout.fragment_navigation_drawer, container, false)
         mRecyclerView = layout.findViewById(R.id.drawerList)
+
+        adapter = RecycleAdapter(getActivity(), getData())
+        mRecyclerView!!.setAdapter(adapter)
+        mRecyclerView!!.setLayoutManager(LinearLayoutManager(getActivity()))
+
         return layout
     }
 
@@ -100,9 +108,26 @@ class NavigationDrawerFragment : Fragment() {
         })
     }
 
+    fun getData() : List<Information> {
+
+        var data = ArrayList<Information>()
+
+        data.add(Information(R.drawable.ic_number1,"Kalivo"))
+        Log.d("Balivo:", data.toString())
+        data.add(Information(R.drawable.ic_number2,"Mihail4o"))
+        Log.d("Balivo:", data.toString())
+        data.add(Information(R.drawable.ic_number3,"Gabcho"))
+        Log.d("Balivo:", data.toString())
+        data.add(Information(R.drawable.ic_number4,"Choko"))
+        Log.d("Balivo:", data.toString())
+        return data
+    }
+
     companion object {
         val PREP_FILE_NAME = "testpref"
         val KEY_USER_LERNED_DRAWER = "user_lerned_drawer"
+
+
 
         fun saveToPreferences(context:Context, preferenceName:String, preferenceValue:String){
 
