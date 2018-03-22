@@ -113,13 +113,10 @@ class NavigationDrawerFragment : Fragment() {
         var data = ArrayList<Information>()
 
         data.add(Information(R.drawable.ic_number1,"Kalivo"))
-        Log.d("Balivo:", data.toString())
         data.add(Information(R.drawable.ic_number2,"Mihail4o"))
-        Log.d("Balivo:", data.toString())
         data.add(Information(R.drawable.ic_number3,"Gabcho"))
-        Log.d("Balivo:", data.toString())
         data.add(Information(R.drawable.ic_number4,"Choko"))
-        Log.d("Balivo:", data.toString())
+
         return data
     }
 

@@ -32,24 +32,20 @@ class RecycleAdapter: RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
 
     override fun onBindViewHolder(myViewHolder:MyViewHolder, position:Int) {
 
-        val current:Information = data!!.get(position)
-        myViewHolder.title!!.setText(current.title)
-        myViewHolder.icon!!.setImageResource(current.iconId)
+        myViewHolder.title.text=data!![position].title
+        myViewHolder.icon.setImageResource(data!![position].iconId)
+
     }
 
     override fun getItemCount(): Int {
-        Log.d("Balivo Size: ", data!!.size.toString())
+
         return data!!.size
     }
 
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-        var title: TextView?=null
-        var icon: ImageView?=null
 
+        internal var title: TextView = itemView.findViewById(R.id.listText)
+        internal var icon: ImageView = itemView.findViewById(R.id.listIcon)
 
-        init {
-            title = itemView.findViewById(R.id.listText) as TextView
-            icon = itemView.findViewById(R.id.listIcon) as ImageView
-        }
     }
 }
