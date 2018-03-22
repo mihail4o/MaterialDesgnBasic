@@ -14,6 +14,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.lucasr.dspec.DesignSpec
+
+
 
 
 /**
@@ -37,8 +40,22 @@ class NavigationDrawerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val layout:View = inflater!!.inflate(R.layout.fragment_navigation_drawer, container, false)
+        val layout = inflater!!.inflate(R.layout.fragment_navigation_drawer, container, false)
         mRecyclerView = layout.findViewById(R.id.drawerList)
+
+        /*
+        *   dspec
+        *
+        *   A simple way to define and render UI specs on top of your Android UI.
+        *
+        *   URL: https://github.com/lucasr/dspec
+        *
+        *
+        *   Add this two line to your View! */
+        val designSpec = DesignSpec.fromResource(layout, R.raw.spec)
+        layout.getOverlay().add(designSpec)
+
+        //*/
 
         adapter = RecycleAdapter(getActivity(), getData())
         mRecyclerView!!.setAdapter(adapter)
