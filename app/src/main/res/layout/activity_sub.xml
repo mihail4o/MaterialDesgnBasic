@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.balivo.materialdesgnbasic.MyLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,10 +13,13 @@
         />
 
 
-    <TextView
-        android:layout_below="@+id/app_bar"
+    <com.balivo.materialdesgnbasic.MyView
         android:layout_width="wrap_content"
-        android:text="Hello Sub Activity"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:text="My View"
+        android:textColor="@android:color/black"/>
 
-</RelativeLayout>
+</com.balivo.materialdesgnbasic.MyLayout>
