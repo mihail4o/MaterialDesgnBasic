@@ -51,11 +51,11 @@ class NavigationDrawerFragment : Fragment() {
         *   URL: https://github.com/lucasr/dspec
         *
         *
-        *   Add this two line to your View! */
+        *   Add this two line to your View!
         val designSpec = DesignSpec.fromResource(layout, R.raw.spec)
         layout.getOverlay().add(designSpec)
 
-        //*/
+        */
 
         adapter = RecycleAdapter(getActivity(), getData())
         mRecyclerView!!.setAdapter(adapter)
@@ -125,7 +125,7 @@ class NavigationDrawerFragment : Fragment() {
         })
     }
 
-    fun getData() : List<Information> {
+    fun getData() : ArrayList<Information> {
 
         var data = ArrayList<Information>()
 
@@ -133,7 +133,14 @@ class NavigationDrawerFragment : Fragment() {
         data.add(Information(R.drawable.ic_number2,"Mihail4o"))
         data.add(Information(R.drawable.ic_number3,"Gabcho"))
         data.add(Information(R.drawable.ic_number4,"Choko"))
-
+        data.add(Information(R.drawable.ic_number1,"Kalivo"))
+        data.add(Information(R.drawable.ic_number2,"Mihail4o"))
+        data.add(Information(R.drawable.ic_number3,"Gabcho"))
+        data.add(Information(R.drawable.ic_number4,"Choko"))
+        data.add(Information(R.drawable.ic_number1,"Kalivo"))
+        data.add(Information(R.drawable.ic_number2,"Mihail4o"))
+        data.add(Information(R.drawable.ic_number3,"Gabcho"))
+        data.add(Information(R.drawable.ic_number4,"Choko"))
         return data
     }
 

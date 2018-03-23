@@ -1,27 +1,28 @@
 package com.balivo.materialdesgnbasic
 
-import android.content.Context
-import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import java.util.*
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
  * Created by balivo on 3/19/18.
  */
-class RecycleAdapter: RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
+class RecycleAdapter(context:Context,data:ArrayList<Information>): RecyclerView.Adapter<RecycleAdapter.MyViewHolder>() {
 
-    private var inflater: LayoutInflater?=null
-    private var data: List<Information>?= Collections.emptyList()
+    protected var inflater: LayoutInflater?=null
+    protected var data: ArrayList<Information>?= null
+    protected var mContext: Context?=null
 
-    constructor(context:Context,data:List<Information>){
+    init{
         inflater = LayoutInflater.from(context)
         this.data = data
+        this.mContext=context
     }
 
     override fun onCreateViewHolder(viewGroup : ViewGroup, viewType:Int): MyViewHolder? {
@@ -32,8 +33,8 @@ class RecycleAdapter: RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
 
     override fun onBindViewHolder(myViewHolder:MyViewHolder, position:Int) {
 
-        myViewHolder.title.text=data!![position].title
-        myViewHolder.icon.setImageResource(data!![position].iconId)
+        myViewHolder.tv_title.text=data!![position].title
+        myViewHolder.iv_icon.setImageResource(data!![position].iconId)
 
     }
 
@@ -42,10 +43,22 @@ class RecycleAdapter: RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
         return data!!.size
     }
 
-    inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        var iv_icon:ImageView
+        var tv_title:TextView
+        init{
+            tv_title = itemView.findViewById(R.id.listText) as TextView
+            iv_icon = itemView.findViewById(R.id.listIcon) as ImageView
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v:View) {
+            Toast.makeText(mContext, "Item clicked at " + getAdapterPosition(), Toast.LENGTH_SHORT).show()
+            delete(getAdapterPosition())
+        }
 
-        internal var title: TextView = itemView.findViewById(R.id.listText)
-        internal var icon: ImageView = itemView.findViewById(R.id.listIcon)
-
+        fun delete(postion:Int) {
+            data!!.removeAt(postion)
+            notifyItemRemoved(postion)
+        }
     }
 }
