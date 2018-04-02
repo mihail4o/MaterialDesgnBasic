@@ -1,7 +1,7 @@
 package com.balivo.materialdesgnbasic
 
 /**
- * Created by Administrator on 3/23/2018.
+ * Created by balivo on 3/23/2018.
  */
 import android.content.Context
 import android.graphics.Paint
@@ -10,9 +10,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
 
-/**
- * Created by bojiejiang on 4/29/15.
- */
 class MyView : TextView {
     internal lateinit var paint: Paint
 
@@ -41,6 +38,10 @@ class MyView : TextView {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
+        // Block Touch Events (onInterceptTouchEvent) from parent!!!
+        getParent().requestDisallowInterceptTouchEvent(true)
+
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> Log.d(TAG, "View onTouchEvent DOWN")
             MotionEvent.ACTION_MOVE ->
@@ -49,7 +50,8 @@ class MyView : TextView {
             MotionEvent.ACTION_UP -> Log.d(TAG, "View onTouchEvent UP")
             MotionEvent.ACTION_CANCEL -> Log.d(TAG, "View onTouchEvent CANCEL")
         }
-        val b = super.onTouchEvent(event)
+//        val b = super.onTouchEvent(event)
+        val b = true
         Log.d(TAG, "View onTouchEvent RETURNS $b")
         return b
     }

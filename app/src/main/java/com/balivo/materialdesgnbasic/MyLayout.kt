@@ -1,7 +1,7 @@
 package com.balivo.materialdesgnbasic
 
 /**
- * Created by Administrator on 3/23/2018.
+ * Created by balivo on 3/23/2018.
  */
 import android.content.Context
 import android.graphics.Canvas
@@ -12,9 +12,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.FrameLayout
 
-/**
- * Created by bojiejiang on 4/29/15.
- */
 class MyLayout : FrameLayout {
     internal lateinit var paint: Paint
 
@@ -53,13 +50,19 @@ class MyLayout : FrameLayout {
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        val b = super.onInterceptTouchEvent(ev)
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> Log.d(TAG, "MyLayout onInterceptTouchEvent DOWN")
             MotionEvent.ACTION_MOVE -> Log.d(TAG, "MyLayout onInterceptTouchEvent MOVE")
+//            MotionEvent.ACTION_MOVE -> {
+//                Log.d(TAG, "MyLayout onInterceptTouchEvent MOVE")
+//                return true
+//            }
             MotionEvent.ACTION_UP -> Log.d(TAG, "MyLayout onInterceptTouchEvent UP")
             MotionEvent.ACTION_CANCEL -> Log.d(TAG, "MyLayout onInterceptTouchEvent CANCEL")
         }
-        val b = super.onInterceptTouchEvent(ev)
+
+//        val b = true
         Log.d(TAG, "MyLayout onInterceptTouchEvent RETURNS $b")
         return b
     }
@@ -71,7 +74,8 @@ class MyLayout : FrameLayout {
             MotionEvent.ACTION_UP -> Log.d(TAG, "MyLayout onTouchEvent UP")
             MotionEvent.ACTION_CANCEL -> Log.d(TAG, "MyLayout onTouchEvent CANCEL")
         }
-        val b = super.onTouchEvent(event)
+         val b = super.onTouchEvent(event)
+//        val b = true
         Log.d(TAG, "MyLayout onTouchEvent RETURNS $b")
         return b
     }

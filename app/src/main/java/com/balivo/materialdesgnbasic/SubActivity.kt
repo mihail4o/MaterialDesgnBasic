@@ -48,6 +48,7 @@ class SubActivity: AppCompatActivity() {
             MotionEvent.ACTION_CANCEL -> Log.d(TAG, "Activity dispatchTouchEvent CANCEL")
         }
         val b = super.dispatchTouchEvent(ev)
+//        val b = true
         Log.d(TAG, "Activity dispatchTouchEvent RETURNS " + b)
         return b
     }
