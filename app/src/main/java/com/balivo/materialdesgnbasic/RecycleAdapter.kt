@@ -1,6 +1,7 @@
 package com.balivo.materialdesgnbasic
 
 import android.content.Context;
+import android.content.Intent
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,12 @@ class RecycleAdapter(context:Context,data:ArrayList<Information>): RecyclerView.
         }
         override fun onClick(v:View) {
             Toast.makeText(mContext, "Item clicked at " + getAdapterPosition(), Toast.LENGTH_SHORT).show()
-            delete(getAdapterPosition())
+
+//            Delete a row from Drawer when clicked
+//            delete(getAdapterPosition())
+
+            // Call SubActivity on click
+            mContext!!.startActivity(Intent(mContext, SubActivity::class.java))
         }
 
         fun delete(postion:Int) {
