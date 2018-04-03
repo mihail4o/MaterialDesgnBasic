@@ -12,9 +12,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import org.lucasr.dspec.DesignSpec
 
 
@@ -23,7 +22,7 @@ import org.lucasr.dspec.DesignSpec
 /**
  * A simple [Fragment] subclass.
  */
-class NavigationDrawerFragment : Fragment(), RecycleAdapter.ClickListener {
+class NavigationDrawerFragment : Fragment() {
 
     private var mRecyclerView:RecyclerView?=null
 
@@ -59,11 +58,20 @@ class NavigationDrawerFragment : Fragment(), RecycleAdapter.ClickListener {
         */
 
         adapter = RecycleAdapter(getActivity(), getData())
-
-        adapter!!.setClickListener(this)
-
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.setLayoutManager(LinearLayoutManager(getActivity()))
+
+        mRecyclerView!!.addOnItemTouchListener(RecycleTouchListener(getActivity(), mRecyclerView!!, object:ClickListener{
+
+            override fun onClick(view: View, postion: Int) {
+                Toast.makeText(getActivity(), "onClick " + postion, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onLongClick(view: View, positon: Int) {
+                Toast.makeText(getActivity(), "onLongClick " + positon, Toast.LENGTH_SHORT).show()
+            }
+
+        }))
 
         return layout
     }
@@ -171,8 +179,61 @@ class NavigationDrawerFragment : Fragment(), RecycleAdapter.ClickListener {
 
     }
 
-    override fun itemClicked(view: View, position: Int) {
-        startActivity(Intent(getActivity(), SubActivity::class.java))
+    inner class RecycleTouchListener(context:Context, recyclerView:RecyclerView, clickListener:ClickListener):RecyclerView.OnItemTouchListener {
+
+        private val mGestureDetector:GestureDetector
+        private val mClickListener :  ClickListener
+
+        init {
+            Log.d("BALIVO", "Constructor invoked")
+
+            this.mClickListener = clickListener
+            mGestureDetector = GestureDetector(context, object:GestureDetector.SimpleOnGestureListener(){
+
+                override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                    Log.d("BALIVO", "onSingleTapUp "+e)
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent?) {
+                    Log.d("BALIVO", "onLongPress "+e)
+
+                    val child = mRecyclerView!!.findChildViewUnder(e!!.getX(),e!!.getY())
+
+                    if (child!=null && clickListener!=null) {
+                        clickListener.onLongClick(child, mRecyclerView!!.getChildLayoutPosition(child))
+                    }
+                }
+            })
+
+        }
+
+        override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
+            Log.d("BALIVO", "onTouchEvent"+e)
+        }
+
+        override fun onInterceptTouchEvent(rv: RecyclerView?, e: MotionEvent?): Boolean {
+
+            val child = rv!!.findChildViewUnder(e!!.getX(),e!!.getY())
+
+            if (child!=null && mClickListener!=null && mGestureDetector.onTouchEvent(e)) {
+
+                mClickListener.onClick(child, rv.getChildLayoutPosition(child))
+
+            }
+
+            return false
+        }
+
+        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+
+        }
+
+    }
+
+    interface ClickListener {
+        fun onClick(view:View, postion:Int)
+        fun onLongClick(view:View, positon:Int)
     }
 
 }// Required empty public constructor
