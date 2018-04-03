@@ -2,6 +2,7 @@ package com.balivo.materialdesgnbasic
 
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -22,7 +23,7 @@ import org.lucasr.dspec.DesignSpec
 /**
  * A simple [Fragment] subclass.
  */
-class NavigationDrawerFragment : Fragment() {
+class NavigationDrawerFragment : Fragment(), RecycleAdapter.ClickListener {
 
     private var mRecyclerView:RecyclerView?=null
 
@@ -58,6 +59,9 @@ class NavigationDrawerFragment : Fragment() {
         */
 
         adapter = RecycleAdapter(getActivity(), getData())
+
+        adapter!!.setClickListener(this)
+
         mRecyclerView!!.setAdapter(adapter)
         mRecyclerView!!.setLayoutManager(LinearLayoutManager(getActivity()))
 
@@ -165,6 +169,10 @@ class NavigationDrawerFragment : Fragment() {
 
         }
 
+    }
+
+    override fun itemClicked(view: View, position: Int) {
+        startActivity(Intent(getActivity(), SubActivity::class.java))
     }
 
 }// Required empty public constructor

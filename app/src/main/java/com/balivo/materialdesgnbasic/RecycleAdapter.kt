@@ -20,6 +20,8 @@ class RecycleAdapter(context:Context,data:ArrayList<Information>): RecyclerView.
     protected var data: ArrayList<Information>?= null
     protected var mContext: Context?=null
 
+    private lateinit var clickListener:ClickListener
+
     init{
         inflater = LayoutInflater.from(context)
         this.data = data
@@ -30,6 +32,10 @@ class RecycleAdapter(context:Context,data:ArrayList<Information>): RecyclerView.
         val view:View = inflater!!.inflate(R.layout.custom_row, viewGroup, false)
         val holder = MyViewHolder(view)
         return holder
+    }
+
+    fun setClickListener(clickListener:ClickListener){
+        this.clickListener=clickListener
     }
 
     override fun onBindViewHolder(myViewHolder:MyViewHolder, position:Int) {
@@ -59,12 +65,22 @@ class RecycleAdapter(context:Context,data:ArrayList<Information>): RecyclerView.
 //            delete(getAdapterPosition())
 
             // Call SubActivity on click
-            mContext!!.startActivity(Intent(mContext, SubActivity::class.java))
+            // Variant #1
+//            mContext!!.startActivity(Intent(mContext, SubActivity::class.java))
+
+            // Variant #2
+            if (clickListener!=null) {
+                clickListener.itemClicked(v, getAdapterPosition())
+            }
         }
 
         fun delete(postion:Int) {
             data!!.removeAt(postion)
             notifyItemRemoved(postion)
         }
+    }
+
+    interface ClickListener {
+        fun itemClicked(view:View, position:Int)
     }
 }
