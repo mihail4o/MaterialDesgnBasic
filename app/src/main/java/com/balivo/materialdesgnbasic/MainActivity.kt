@@ -4,16 +4,24 @@ import android.R.menu
 import android.content.Intent
 import android.support.v7.app.*
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
+import android.widget.TextView
 import android.widget.Toast
+import com.balivo.materialdesgnbasic.tabs.SlidingTabLayout
 
 
 class MainActivity : AppCompatActivity() {
 
     private var toolbar:Toolbar?=null
+
+    private lateinit var mPager : ViewPager
+    private lateinit var mTabs : SlidingTabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +36,51 @@ class MainActivity : AppCompatActivity() {
                 as NavigationDrawerFragment
 
         drawerFragment.setUp(R.id.fragment_navigation_drawer, findViewById(R.id.drawer_layout)as DrawerLayout, toolbar as Toolbar)
+
+        mPager = findViewById(R.id.pager) as ViewPager
+        mPager.setAdapter(MyPagerAdapter(getSupportFragmentManager()))
+        mTabs = findViewById(R.id.tabs) as SlidingTabLayout
+        mTabs.setViewPager(mPager)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
+    }
+
+    class MyFragment:Fragment() {
+
+        private lateinit var textView : TextView
+
+        companion object {
+
+            fun getInstance(position:Int):MyFragment {
+
+                val myFragment = MyFragment()
+                val args = Bundle()
+                args.putInt("position", position)
+                myFragment.setArguments(args)
+
+                return myFragment
+            }
+        }
+
+        override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+            val layout = inflater!!.inflate(R.layout.fragment_my, container, false)
+
+            textView = layout.findViewById(R.id.position) as TextView
+
+            val bundle = arguments
+
+            if (bundle!=null) {
+                textView.text= "The Page Selected Is " + bundle.getInt("position").toString()
+            }
+
+            return layout
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -55,5 +102,30 @@ class MainActivity : AppCompatActivity() {
             return true
 
         } else return super.onOptionsItemSelected(item)
+    }
+
+    internal inner class MyPagerAdapter : FragmentPagerAdapter {
+
+        lateinit var tabs:Array<String>
+
+        init{
+            tabs = getResources().getStringArray(R.array.tabs)
+        }
+
+        constructor(fm : FragmentManager): super(fm) {}
+
+        override fun getPageTitle(position: Int): CharSequence {
+            return tabs[position]
+        }
+
+        override fun getItem(position: Int): Fragment {
+            val myFragment = MyFragment.getInstance(position)
+            return myFragment
+        }
+
+        override fun getCount(): Int {
+            return 3
+        }
+
     }
 }
