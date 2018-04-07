@@ -1,6 +1,5 @@
 package com.balivo.materialdesgnbasic
 
-import android.R.menu
 import android.content.Intent
 import android.support.v7.app.*
 import android.os.Bundle
@@ -10,6 +9,9 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.Toolbar
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -18,29 +20,34 @@ import com.balivo.materialdesgnbasic.tabs.SlidingTabLayout
 
 class MainActivity : AppCompatActivity() {
 
-    private var toolbar:Toolbar?=null
+    private var mToolbar:Toolbar?=null
 
-    private lateinit var mPager : ViewPager
-    private lateinit var mTabs : SlidingTabLayout
+    private lateinit var mViewPager : ViewPager
+    private lateinit var mSlidingTabLayout : SlidingTabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toolbar=findViewById(R.id.app_bar)
-        setSupportActionBar(toolbar)
+        mToolbar=findViewById(R.id.app_bar)
+        setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
-
-        val drawerFragment:NavigationDrawerFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer)
+        val drawerFragment:NavigationDrawerFragment = supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer)
                 as NavigationDrawerFragment
 
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, findViewById(R.id.drawer_layout)as DrawerLayout, toolbar as Toolbar)
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, findViewById<DrawerLayout>(R.id.drawer_layout), mToolbar as Toolbar)
 
-        mPager = findViewById(R.id.pager) as ViewPager
-        mPager.setAdapter(MyPagerAdapter(getSupportFragmentManager()))
-        mTabs = findViewById(R.id.tabs) as SlidingTabLayout
-        mTabs.setViewPager(mPager)
+        mViewPager = findViewById<ViewPager>(R.id.pager)
+        mViewPager.adapter = MyPagerAdapter(supportFragmentManager)
+        mSlidingTabLayout = findViewById<SlidingTabLayout>(R.id.tabs)
+        mSlidingTabLayout.setCustomTabView(R.layout.custom_tab_view, R.id.tabText)
+        mSlidingTabLayout.setDistributeEvenly(true)
+
+        mSlidingTabLayout.setBackgroundColor(resources.getColor(R.color.primary))
+        mSlidingTabLayout.setSelectedIndicatorColors(resources.getColor(R.color.accent))
+
+        mSlidingTabLayout.setViewPager(mViewPager)
 
     }
 
@@ -61,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 val myFragment = MyFragment()
                 val args = Bundle()
                 args.putInt("position", position)
-                myFragment.setArguments(args)
+                myFragment.arguments = args
 
                 return myFragment
             }
@@ -104,23 +111,25 @@ class MainActivity : AppCompatActivity() {
         } else return super.onOptionsItemSelected(item)
     }
 
-    internal inner class MyPagerAdapter : FragmentPagerAdapter {
+    internal inner class MyPagerAdapter(fm : FragmentManager) : FragmentPagerAdapter(fm) {
 
-        lateinit var tabs:Array<String>
-
-        init{
-            tabs = getResources().getStringArray(R.array.tabs)
-        }
-
-        constructor(fm : FragmentManager): super(fm) {}
-
-        override fun getPageTitle(position: Int): CharSequence {
-            return tabs[position]
-        }
+        var tabText = resources.getStringArray(R.array.tabs)
+        var icons= intArrayOf(R.drawable.ic_action_home, R.drawable.ic_action_articles, R.drawable.ic_action_personal)
 
         override fun getItem(position: Int): Fragment {
             val myFragment = MyFragment.getInstance(position)
             return myFragment
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+
+            val drawable = resources.getDrawable(icons[position])
+            drawable.setBounds(150, 0, 280, drawable.intrinsicHeight)
+            val imageSpan = ImageSpan(drawable)
+            val spannableString = SpannableString(" ")
+            spannableString.setSpan(imageSpan,0,spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            return spannableString
         }
 
         override fun getCount(): Int {

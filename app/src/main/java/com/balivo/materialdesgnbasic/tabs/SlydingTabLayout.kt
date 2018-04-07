@@ -3,15 +3,18 @@ package com.balivo.materialdesgnbasic.tabs
 
 import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
+import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
+import android.widget.LinearLayout
 import android.widget.TextView
 
 /**
@@ -25,7 +28,7 @@ import android.widget.TextView
  *
  *
  * The colors can be customized in two ways. The first and simplest is to provide an array of colors
- * via [.setSelectedIndicatorColors] and [.setDividerColors]. The
+ * via [.setSelectedIndicatorColors]. The
  * alternative is via the [TabColorizer] interface which provides you complete control over
  * which color is used for any individual position.
  *
@@ -39,8 +42,10 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private var mTabViewLayoutId: Int = 0
     private var mTabViewTextViewId: Int = 0
+    private var mDistributeEvenly: Boolean = false
 
     private var mViewPager: ViewPager? = null
+    private val mContentDescriptions = SparseArray<String>()
     private var mViewPagerPageChangeListener: ViewPager.OnPageChangeListener? = null
 
     private val mTabStrip: SlidingTabStrip
@@ -55,11 +60,6 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
          * @return return the color of the indicator used when `position` is selected.
          */
         fun getIndicatorColor(position: Int): Int
-
-        /**
-         * @return return the color of the divider drawn to the right of `position`.
-         */
-        fun getDividerColor(position: Int): Int
 
     }
 
@@ -79,28 +79,25 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
     /**
      * Set the custom [TabColorizer] to be used.
      *
+     *
      * If you only require simple custmisation then you can use
-     * [.setSelectedIndicatorColors] and [.setDividerColors] to achieve
+     * [.setSelectedIndicatorColors] to achieve
      * similar effects.
      */
     fun setCustomTabColorizer(tabColorizer: TabColorizer) {
         mTabStrip.setCustomTabColorizer(tabColorizer)
     }
 
+    fun setDistributeEvenly(distributeEvenly: Boolean) {
+        mDistributeEvenly = distributeEvenly
+    }
+
     /**
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
      */
-    fun setSelectedIndicatorColors(colors: Int) {
-        mTabStrip.setSelectedIndicatorColors(colors)
-    }
-
-    /**
-     * Sets the colors to be used for tab dividers. These colors are treated as a circular array.
-     * Providing one color will mean that all tabs are indicated with the same color.
-     */
-    fun setDividerColors(colors: Int) {
-        mTabStrip.setDividerColors(colors)
+    fun setSelectedIndicatorColors(vararg colors: Int) {
+        mTabStrip.setSelectedIndicatorColors(*colors)
     }
 
     /**
@@ -118,7 +115,7 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
      * Set the custom layout to be inflated for the tab views.
      *
      * @param layoutResId Layout id to be inflated
-     * @param textViewId id of the [TextView] in the inflated view
+     * @param textViewId  id of the [TextView] in the inflated view
      */
     fun setCustomTabView(layoutResId: Int, textViewId: Int) {
         mTabViewLayoutId = layoutResId
@@ -148,20 +145,14 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
         textView.gravity = Gravity.CENTER
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP.toFloat())
         textView.typeface = Typeface.DEFAULT_BOLD
+        textView.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // If we're running on Honeycomb or newer, then we can use the Theme's
-            // selectableItemBackground to ensure that the View has a pressed state
-            val outValue = TypedValue()
-            getContext().theme.resolveAttribute(android.R.attr.selectableItemBackground,
-                    outValue, true)
-            textView.setBackgroundResource(outValue.resourceId)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            // If we're running on ICS or newer, enable all-caps to match the Action Bar tab style
-            textView.setAllCaps(true)
-        }
+        val outValue = TypedValue()
+        getContext().theme.resolveAttribute(android.R.attr.selectableItemBackground,
+                outValue, true)
+        textView.setBackgroundResource(outValue.resourceId)
+        textView.setAllCaps(true)
 
         val padding = (TAB_VIEW_PADDING_DIPS * resources.displayMetrics.density).toInt()
         textView.setPadding(padding, padding, padding, padding)
@@ -192,11 +183,28 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
                 tabTitleView = tabView as TextView?
             }
 
+            if (mDistributeEvenly) {
+                val lp = tabView.layoutParams as LinearLayout.LayoutParams
+                lp.width = 0
+                lp.weight = 1f
+            }
+
             tabTitleView!!.text = adapter.getPageTitle(i)
             tabView.setOnClickListener(tabClickListener)
+            val desc = mContentDescriptions.get(i, null)
+            if (desc != null) {
+                tabView.contentDescription = desc
+            }
 
             mTabStrip.addView(tabView)
+            if (i == mViewPager!!.currentItem) {
+                tabView.isSelected = true
+            }
         }
+    }
+
+    fun setContentDescription(i: Int, desc: String) {
+        mContentDescriptions.put(i, desc)
     }
 
     override fun onAttachedToWindow() {
@@ -208,14 +216,14 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     private fun scrollToTab(tabIndex: Int, positionOffset: Int) {
-        val tabStripChildCount = mTabStrip.getChildCount()
+        val tabStripChildCount = mTabStrip.childCount
         if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
             return
         }
 
         val selectedChild = mTabStrip.getChildAt(tabIndex)
         if (selectedChild != null) {
-            var targetScrollX = selectedChild!!.getLeft() + positionOffset
+            var targetScrollX = selectedChild.left + positionOffset
 
             if (tabIndex > 0 || positionOffset > 0) {
                 // If we're not at the first child and are mid-scroll, make sure we obey the offset
@@ -230,7 +238,7 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
         private var mScrollState: Int = 0
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            val tabStripChildCount = mTabStrip.getChildCount()
+            val tabStripChildCount = mTabStrip.childCount
             if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
                 return
             }
@@ -239,7 +247,7 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
 
             val selectedTitle = mTabStrip.getChildAt(position)
             val extraOffset = if (selectedTitle != null)
-                (positionOffset * selectedTitle!!.getWidth()).toInt()
+                (positionOffset * selectedTitle.width).toInt()
             else
                 0
             scrollToTab(position, extraOffset)
@@ -263,7 +271,9 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
                 mTabStrip.onViewPagerPageChanged(position, 0f)
                 scrollToTab(position, 0)
             }
-
+            for (i in 0 until mTabStrip.childCount) {
+                mTabStrip.getChildAt(i).isSelected = position == i
+            }
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener!!.onPageSelected(position)
             }
@@ -273,7 +283,7 @@ class SlidingTabLayout @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private inner class TabClickListener : View.OnClickListener {
         override fun onClick(v: View) {
-            for (i in 0 until mTabStrip.getChildCount()) {
+            for (i in 0 until mTabStrip.childCount) {
                 if (v === mTabStrip.getChildAt(i)) {
                     mViewPager!!.currentItem = i
                     return
