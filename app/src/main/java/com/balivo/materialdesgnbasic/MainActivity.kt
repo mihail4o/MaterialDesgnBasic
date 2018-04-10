@@ -33,22 +33,21 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val drawerFragment:NavigationDrawerFragment = supportFragmentManager.findFragmentById(R.id.fragment_navigation_drawer)
-                as NavigationDrawerFragment
+        val drawerFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_navigation_drawer) as NavigationDrawerFragment
 
-        drawerFragment.setUp(R.id.fragment_navigation_drawer, findViewById<DrawerLayout>(R.id.drawer_layout), mToolbar as Toolbar)
+        drawerFragment.setUp(R.id.fragment_navigation_drawer,
+                findViewById(R.id.drawer_layout) as DrawerLayout, mToolbar as Toolbar)
 
-        mViewPager = findViewById<ViewPager>(R.id.pager)
-        mViewPager.adapter = MyPagerAdapter(supportFragmentManager)
-        mSlidingTabLayout = findViewById<SlidingTabLayout>(R.id.tabs)
+        mViewPager = findViewById(R.id.pager) as ViewPager
+        mViewPager.setAdapter(MyPagerAdapter(getSupportFragmentManager()))
+        mSlidingTabLayout = findViewById(R.id.tabs) as SlidingTabLayout
         mSlidingTabLayout.setCustomTabView(R.layout.custom_tab_view, R.id.tabText)
         mSlidingTabLayout.setDistributeEvenly(true)
-
-        mSlidingTabLayout.setBackgroundColor(resources.getColor(R.color.primary))
-        mSlidingTabLayout.setSelectedIndicatorColors(resources.getColor(R.color.accent))
-
+        // colors for tab
+        mSlidingTabLayout.setBackgroundColor(getResources().getColor(R.color.primary))
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent))
         mSlidingTabLayout.setViewPager(mViewPager)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -57,7 +56,62 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    class MyFragment:Fragment() {
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        val id = item.itemId
+
+
+        if (id == R.id.action_settings) {
+
+            Toast.makeText(this, "Hey, you just hit!", Toast.LENGTH_LONG).show()
+            return true
+        }
+
+        if (id === R.id.action_tab_busing_library) {
+            startActivity(Intent(this, ActivityUsingTabLibrary::class.java))
+        }
+
+        else if (id == R.id.navigate) {
+
+            startActivity(Intent(this, SubActivity::class.java))
+
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    internal inner class MyPagerAdapter(fm : FragmentManager) : FragmentPagerAdapter(fm) {
+
+        var tabText = resources.getStringArray(R.array.tabs)
+        var icons= intArrayOf(R.drawable.ic_action_home, R.drawable.ic_action_articles, R.drawable.ic_action_personal)
+
+        override fun getItem(position: Int): Fragment {
+            val myFragment = MyFragment.getInstance(position)
+            return myFragment
+        }
+
+        override fun getPageTitle(position: Int): CharSequence {
+
+            val drawable = resources.getDrawable(icons[position])
+            drawable.setBounds(150, 0, 280, drawable.intrinsicHeight)
+            val imageSpan = ImageSpan(drawable)
+            val spannableString = SpannableString(" ")
+            spannableString.setSpan(imageSpan,0,spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            return spannableString
+        }
+
+        override fun getCount(): Int {
+            return 3
+        }
+
+    }
+
+    class MyFragment: Fragment() {
 
         private lateinit var textView : TextView
 
@@ -88,53 +142,5 @@ class MainActivity : AppCompatActivity() {
 
             return layout
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        if (id == R.id.action_settings) {
-
-            Toast.makeText(this, "Hey, you just hit!", Toast.LENGTH_LONG).show()
-            return true
-        }
-
-        else if (id == R.id.navigate) {
-
-            startActivity(Intent(this, SubActivity::class.java))
-            return true
-
-        } else return super.onOptionsItemSelected(item)
-    }
-
-    internal inner class MyPagerAdapter(fm : FragmentManager) : FragmentPagerAdapter(fm) {
-
-        var tabText = resources.getStringArray(R.array.tabs)
-        var icons= intArrayOf(R.drawable.ic_action_home, R.drawable.ic_action_articles, R.drawable.ic_action_personal)
-
-        override fun getItem(position: Int): Fragment {
-            val myFragment = MyFragment.getInstance(position)
-            return myFragment
-        }
-
-        override fun getPageTitle(position: Int): CharSequence {
-
-            val drawable = resources.getDrawable(icons[position])
-            drawable.setBounds(150, 0, 280, drawable.intrinsicHeight)
-            val imageSpan = ImageSpan(drawable)
-            val spannableString = SpannableString(" ")
-            spannableString.setSpan(imageSpan,0,spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            return spannableString
-        }
-
-        override fun getCount(): Int {
-            return 3
-        }
-
     }
 }
