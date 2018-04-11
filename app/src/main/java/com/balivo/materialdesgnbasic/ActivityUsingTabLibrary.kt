@@ -13,7 +13,7 @@ import android.view.MenuItem
 import it.neokree.materialtabs.MaterialTab
 import it.neokree.materialtabs.MaterialTabHost
 import it.neokree.materialtabs.MaterialTabListener
-import com.balivo.materialdesgnbasic.MainActivity.MyFragment
+
 
 class ActivityUsingTabLibrary : AppCompatActivity(), MaterialTabListener {
 

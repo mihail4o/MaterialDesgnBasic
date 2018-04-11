@@ -15,7 +15,12 @@ import android.text.style.ImageSpan
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.balivo.materialdesgnbasic.tabs.SlidingTabLayout
+import com.balivo.materialdesgnbasic.MyFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -111,36 +116,5 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class MyFragment: Fragment() {
 
-        private lateinit var textView : TextView
-
-        companion object {
-
-            fun getInstance(position:Int):MyFragment {
-
-                val myFragment = MyFragment()
-                val args = Bundle()
-                args.putInt("position", position)
-                myFragment.arguments = args
-
-                return myFragment
-            }
-        }
-
-        override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-            val layout = inflater!!.inflate(R.layout.fragment_my, container, false)
-
-            textView = layout.findViewById(R.id.position) as TextView
-
-            val bundle = arguments
-
-            if (bundle!=null) {
-                textView.text= "The Page Selected Is " + bundle.getInt("position").toString()
-            }
-
-            return layout
-        }
-    }
 }
