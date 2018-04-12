@@ -41,8 +41,10 @@ class MyFragment: Fragment() {
             textView.text= "The Page Selected Is " + bundle.getInt("position").toString()
         }
 
-        val mRequestQueue = Volley.newRequestQueue(activity)
-        val url = "http://www.php.net"
+        // Get a RequestQueue
+        val mRequestQueue = VolleySingleton.getInstance(MyApplication.appContext).requestQueue
+
+        val url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Mission%20Viejo%2C%20ca%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
 
 
         val stringRequest = StringRequest(Request.Method.GET, url,
@@ -51,11 +53,15 @@ class MyFragment: Fragment() {
                     //Toast.makeText(activity,"Response is: ${response.substring(0, 500)}", Toast.LENGTH_LONG).show()
                     textView.text = "Response is: ${response.substring(0, 500)}"
                 },
-                Response.ErrorListener { error ->  Toast.makeText(activity,"That didn't work! Error: $error",
-                        Toast.LENGTH_LONG).show() })
+                 Response.ErrorListener { error ->  textView.text = "ERROR: %s".format(error.toString())
+
+                })
 
         // Add the request to the RequestQueue.
-        mRequestQueue.add(stringRequest)
+        //mRequestQueue.add(stringRequest)
+
+        // Add a request (in this example, called stringRequest) to your RequestQueue.
+        VolleySingleton.getInstance(MyApplication.appContext).addToRequestQueue(stringRequest)
 
         return layout
     }
