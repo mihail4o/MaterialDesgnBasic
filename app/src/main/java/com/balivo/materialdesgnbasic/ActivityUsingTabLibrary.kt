@@ -84,7 +84,7 @@ class ActivityUsingTabLibrary : AppCompatActivity(), MaterialTabListener {
     internal inner class ViewPagerAdapter(fm : FragmentManager) : FragmentStatePagerAdapter(fm) {
 
         //var tabText = resources.getStringArray(R.array.tabs)
-        var icons= intArrayOf(R.drawable.ic_action_home, R.drawable.ic_action_articles, R.drawable.ic_action_personal)
+        var icons= intArrayOf(R.drawable.ic_penguin, R.drawable.vector_android, R.drawable.ic_penguin)
 
         override fun getItem(position: Int): Fragment {
 

@@ -13,14 +13,9 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ImageSpan
 import android.view.*
-import android.widget.TextView
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.balivo.materialdesgnbasic.tabs.SlidingTabLayout
-import com.balivo.materialdesgnbasic.MyFragment
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -76,10 +71,12 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        if (id === R.id.action_tab_busing_library) {
+        if (id === R.id.action_tab_using_library) {
             startActivity(Intent(this, ActivityUsingTabLibrary::class.java))
         }
-
+        else if (id === R.id.action_tab_vector_activity) {
+            startActivity(Intent(this, VectorTestActivity::class.java))
+        }
         else if (id == R.id.navigate) {
 
             startActivity(Intent(this, SubActivity::class.java))
